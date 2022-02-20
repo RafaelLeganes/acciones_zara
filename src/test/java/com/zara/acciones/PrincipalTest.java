@@ -647,4 +647,8 @@ public class PrincipalTest<ResourceFile> {
 		assertTrue(fechasCompraEncontradas.size()==6);
 	}
 
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 91202f3612b4f98e75625a8951e1d2be34a18f40
