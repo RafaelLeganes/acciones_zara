@@ -1,6 +1,7 @@
 package com.zara.acciones;
 
 public class Accionista {
+	
 	private int cantidadInvertida;
 	private double cantidadAcciones;
 	
