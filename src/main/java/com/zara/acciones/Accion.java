@@ -1,19 +1,20 @@
 package com.zara.acciones;
 
-import java.util.Date;
+import java.time.LocalDate;
+
 
 public class Accion {
 
 	public final double comision = 0.02;
-	private Date fecha;
+	private LocalDate fecha;
 	private double valorApertura;
 	private double valorCierre;
 	
 
-	public Date getFecha() {
+	public LocalDate getFecha() {
 		return fecha;
 	}
-	public void setFecha(Date fecha) {
+	public void setFecha(LocalDate fecha) {
 		this.fecha = fecha;
 	}
 	public double getValorApertura() {
