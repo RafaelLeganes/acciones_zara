@@ -11,3 +11,6 @@ Se calcula el capital final obtenido, realizando la venta de todas sus acciones 
 El fichero CSV con la cotización se encuentra en el main.
 
 Se ha utilizado Eclipse y Maven con JDK-1.8.
+
+Total acciones: 1254.219
+La ganancia total es: 36585.568
