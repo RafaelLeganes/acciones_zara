@@ -22,7 +22,7 @@ public class AccionesCSV {
 		}
 		
 		try {
-			CSVWriter salidaCSV = new CSVWriter(new FileWriter(salidaArchivo,true), ',');
+			CSVWriter salidaCSV = new CSVWriter(new FileWriter(salidaArchivo,true), ';');
 			String[] cabecera = {"Fecha","Cierre","Apertura","Acciones Compradas", "Acciones Acumuladas"};
 			salidaCSV.writeNext(cabecera);
 			Accion acc = new Accion();
