@@ -1,4 +1,4 @@
-package com.zara.acciones;
+package com.zara.acciones.model;
 
 public class Accionista {
 	
