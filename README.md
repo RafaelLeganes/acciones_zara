@@ -10,7 +10,9 @@ Se calcula el capital final obtenido, realizando la venta de todas sus acciones 
 
 El fichero CSV con la cotización se encuentra en el main.
 
-Se ha utilizado Eclipse y Maven con JDK-1.8.
+Se ha utilizado Eclipse Version: 2021-12 (4.22.0), Maven con JDK-1.8. OpenCSV 3.7
+
+La ruta del fichero de salida asi como el idioma Locale se encuentran en el fichero app.properties de la carpeta resource.
 
 Total acciones: 1254.219
 La ganancia total es: 36585.568
