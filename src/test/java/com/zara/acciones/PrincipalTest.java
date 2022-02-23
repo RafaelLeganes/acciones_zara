@@ -3,13 +3,18 @@ package com.zara.acciones;
 import static org.junit.Assert.assertEquals;
 
 
-import java.io.IOException;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.zara.acciones.controller.Controller;
+import com.zara.acciones.lb.Calculos;
+import com.zara.acciones.model.Accion;
+import com.zara.acciones.model.Accionista;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -19,14 +24,15 @@ public class PrincipalTest<ResourceFile> {
 
 	private Accion accion = new Accion();
 	private Accionista accionista = new Accionista();
-	private Principal principalTest = new Principal(accion, accionista);
+	private Controller principalTest = new Controller();
+	private Calculos cal = new Calculos();
 
 	@Test
 	@Parameters({
     	"50, 3.664, 13.373",
     	"50, 3.256, 15.049"})
 	public void testCalcularAcciones(int a, double b, double expectedValue) {
-		assertEquals(Double.doubleToLongBits(expectedValue), Double.doubleToLongBits(principalTest.calcularAcciones(a,b)));	
+		assertEquals(Double.doubleToLongBits(expectedValue), Double.doubleToLongBits(cal.calcularAcciones(a,b,accion)));	
 	}
 
 	@Test
@@ -34,7 +40,7 @@ public class PrincipalTest<ResourceFile> {
     	"3.567452, 3.567",
     	"3.878975, 3.879"})
 	public void testFormatearDecimales(double a, double expectedValue) {
-		assertEquals(Double.doubleToLongBits(expectedValue),Double.doubleToLongBits(principalTest.formatearDecimales(a)));
+		assertEquals(Double.doubleToLongBits(expectedValue),Double.doubleToLongBits(cal.formatearDecimales(a)));
 	}
 
 	@Test
@@ -42,7 +48,7 @@ public class PrincipalTest<ResourceFile> {
 		"50, 50",
     	"200, 200"})
 	public void testIncrementarInversion(int a, int expectedValue) {
-		principalTest.incrementarInversion(a);
+		cal.incrementarInversion(a, accionista);
 		assertEquals(expectedValue, accionista.getCantidadInvertida());
 	}
 
@@ -52,9 +58,9 @@ public class PrincipalTest<ResourceFile> {
 		"3.256, 50, 3.210, 30.314"})
 	public void testIncrementarAcciones(double a, int b, double c, double expectedValue) {
 		accion.setValorApertura(a);
-		principalTest.incrementarAcciones(b, accion);
+		cal.incrementarAcciones(b, accion, accionista);
 		accion.setValorApertura(c);
-		principalTest.incrementarAcciones(b, accion);
+		cal.incrementarAcciones(b, accion, accionista);
 		assertEquals(Double.doubleToLongBits(expectedValue),Double.doubleToLongBits(accionista.getCantidadAcciones()));
 	}
 
@@ -67,7 +73,7 @@ public class PrincipalTest<ResourceFile> {
 		acciones.add(accion);
 		accionista.setCantidadAcciones(a);
 		accionista.setCantidadInvertida(b);
-		assertEquals(Double.doubleToLongBits(expectedValue),Double.doubleToLongBits(principalTest.calcularBeneficio(acciones)));
+		assertEquals(Double.doubleToLongBits(expectedValue),Double.doubleToLongBits(cal.calcularBeneficio(acciones, accionista)));
 	}
 	
 	@Test
@@ -78,18 +84,18 @@ public class PrincipalTest<ResourceFile> {
 		accion.setValorCierre(b);
 		acciones.add(accion);
 		accionista.setCantidadAcciones(a);
-		assertEquals(Double.doubleToLongBits(expectedValue),Double.doubleToLongBits(principalTest.calcularGanancia(acciones)));
+		assertEquals(Double.doubleToLongBits(expectedValue),Double.doubleToLongBits(cal.calcularGanancia(acciones, accionista)));
 	}
 
 	@Test
 	@Parameters({
-	"./src/test/java/,stocks-ITXTest.csv, 152"})
-	public void testLeerFichero(String a, String b, int expectedValue) {
+	"stocks-ITXTest.csv, 152"})
+	public void testLeerFichero(String a,  int expectedValue) {
 		List<Accion> acciones;
 		try {
-			acciones = principalTest.leerFichero(a,b);
+			acciones = principalTest.leerFicheroController(a);
 			assertEquals(expectedValue, acciones.size());
-		} catch (IOException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -97,13 +103,15 @@ public class PrincipalTest<ResourceFile> {
 
 	@Test
 	@Parameters({
-	"./src/test/java/,stocks-ITXTest.csv, 439.308"})
-	public void testCalcularTotales(String a, String b, double expectedValue) {
-		List<Accion> acciones;
+	"stocks-ITXTest.csv, 8"})
+	public void testCalcularTotales(String a,  int expectedValue) {
+		List<Accion> accionesIn;
+		List<Accion> accionesOut;
 		try {
-			acciones = principalTest.leerFichero(a,b);
-			assertEquals(Double.doubleToLongBits(expectedValue), Double.doubleToLongBits(principalTest.calcularTotales(acciones)));
-		} catch (IOException e) {
+			accionesIn = principalTest.leerFicheroController(a);
+			accionesOut = principalTest.calcularTotales(accionesIn);
+			assertEquals(expectedValue, accionesOut.size());
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -113,13 +121,13 @@ public class PrincipalTest<ResourceFile> {
 
 	@Test
 	@Parameters({
-	"./src/test/java/,stocks-ITXTest.csv, 8"})
-	public void testBuscaUltimoJueves(String a, String b, int expectedValue) {
+	"stocks-ITXTest.csv, 8"})
+	public void testBuscaUltimoJueves(String a, int expectedValue) {
 		List<Accion> acciones;
 		try {
-			acciones = principalTest.leerFichero(a,b);
+			acciones = principalTest.leerFicheroController(a);
 			assertEquals(expectedValue, principalTest.buscaUltimoJueves(acciones).size());
-		} catch (IOException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
