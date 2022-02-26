@@ -10,7 +10,7 @@ Se calcula el capital final obtenido, realizando la venta de todas sus acciones 
 
 El fichero CSV con la cotización se encuentra en el main.
 
-Se ha utilizado Eclipse Version: 2021-12 (4.22.0), Maven con JDK-1.8. OpenCSV 3.7
+Se ha utilizado Eclipse Version: 2021-12 (4.22.0), Maven con JDK-1.8. OpenCSV 3.7, Log4j 2.13.0
 
 La ruta del fichero de salida asi como el idioma Locale se encuentran en el fichero app.properties de la carpeta resource.
 
