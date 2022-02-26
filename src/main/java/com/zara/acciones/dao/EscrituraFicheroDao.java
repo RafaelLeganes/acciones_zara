@@ -5,12 +5,18 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.opencsv.CSVWriter;
 import com.zara.acciones.lb.Calculos;
 import com.zara.acciones.model.Accion;
 import com.zara.acciones.model.Accionista;
 
+
 public class EscrituraFicheroDao {
+	
+	private static final Logger logger = LogManager.getLogger(EscrituraFicheroDao.class);
 
 	public void borrarCSV(String ruta) {
 		boolean existe = new File(ruta).exists();
@@ -22,6 +28,7 @@ public class EscrituraFicheroDao {
 	}
 
 	public void exportarCSV(List<Accion> acciones, String salidaArchivo) throws Exception {
+		logger.debug("Llamada al metodo exportarCSV con parametros: {} y size de listaAcciones: {}", salidaArchivo, acciones.size());
 		Calculos cal = new Calculos();
 		Accionista accionista = new Accionista();
 		double acAcumuladasAnio = 0;
@@ -57,7 +64,9 @@ public class EscrituraFicheroDao {
 			salidaCSV.writeNext(datosAño);
 			String[] datosAños = { "Total Acciones Acumuladas:", String.valueOf(accionesAcumuladas) };
 			salidaCSV.writeNext(datosAños);
+			logger.debug("Fichero CSV generado del método exportarCSV con : {}  registros de acciones generadas", contador);
 		} catch (IOException ex) {
+			logger.error("error al escribir el fichero CSV con parametro de ruta en properties: {}", salidaArchivo);
 			ex.printStackTrace();
 		}
 	}

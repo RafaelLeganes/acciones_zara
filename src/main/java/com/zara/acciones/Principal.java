@@ -2,10 +2,15 @@ package com.zara.acciones;
 
 
 import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import com.zara.acciones.controller.Controller;
 import com.zara.acciones.model.Accion;
 
 public class Principal {
+	
+	private static final Logger logger = LogManager.getLogger(Principal.class);
 
 	public static void main(String[] args) {
 		Controller c = new Controller();
@@ -15,7 +20,7 @@ public class Principal {
 			c.borrarFicheroController();
 			c.escribirFicheroController(Listadefinitiva);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			logger.error("error lanzado al main:  {}", e);
 			e.printStackTrace();
 		}
 

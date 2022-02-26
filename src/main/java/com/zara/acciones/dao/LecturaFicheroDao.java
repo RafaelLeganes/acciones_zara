@@ -11,6 +11,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.opencsv.CSVReader;
 import com.zara.acciones.model.Accion;
 import com.zara.acciones.utilities.FechaAccionesComparator;
@@ -18,8 +21,10 @@ import com.zara.acciones.utilities.FileResourceUtils;
 
 public class LecturaFicheroDao {
 	
+	private static final Logger logger = LogManager.getLogger(LecturaFicheroDao.class);
 	
 	public List<Accion> leerFicheroDao(String ruta, Properties appProps) throws Exception {;
+		logger.debug("Llamada al metodo leerFicheroDao con parametros: {}", ruta);
 		String locale = appProps.getProperty("Locale");
 		String formato = appProps.getProperty("date");
 		char separador = appProps.getProperty("Separator").charAt(0);
@@ -41,6 +46,7 @@ public class LecturaFicheroDao {
 				lista.add(accion);
 			}
 		} catch (IOException e) {
+			logger.error("Error en la lectura del fichero con parámetro: {}", ruta);
 			e.printStackTrace();
 		} finally {
 			if(null!=reader) {
@@ -48,6 +54,7 @@ public class LecturaFicheroDao {
 			}
 		}
 		Collections.sort(lista, new FechaAccionesComparator());
+		logger.debug("Devolución del metodo leerFicheroDao size de la lista devuelta: {}",lista.size());
 		return lista;
 	}
 }
