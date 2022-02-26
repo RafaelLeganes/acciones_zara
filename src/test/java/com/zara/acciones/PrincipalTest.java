@@ -8,6 +8,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -21,6 +23,8 @@ import junitparams.Parameters;
 
 @RunWith(JUnitParamsRunner.class)
 public class PrincipalTest<ResourceFile> {
+	
+	private static final Logger logger = LogManager.getLogger(Controller.class);
 
 	private Accion accion = new Accion();
 	private Accionista accionista = new Accionista();
@@ -31,24 +35,27 @@ public class PrincipalTest<ResourceFile> {
 	@Parameters({
     	"50, 3.664, 13.373",
     	"50, 3.256, 15.049"})
-	public void testCalcularAcciones(int a, double b, double expectedValue) {
-		assertEquals(Double.doubleToLongBits(expectedValue), Double.doubleToLongBits(cal.calcularAcciones(a,b,accion)));	
+	public void testCalcularAcciones(int cantidadInvertida, double precioApertura, double expectedValue) {
+		logger.debug("Llamada al metodo testCalcularAcciones con parametros: \"50, 3.664, 13.373\", \"50, 3.256, 15.049\"");
+		assertEquals(Double.doubleToLongBits(expectedValue), Double.doubleToLongBits(cal.calcularAcciones(cantidadInvertida,precioApertura,accion)));	
 	}
 
 	@Test
 	@Parameters({
     	"3.567452, 3.567",
     	"3.878975, 3.879"})
-	public void testFormatearDecimales(double a, double expectedValue) {
-		assertEquals(Double.doubleToLongBits(expectedValue),Double.doubleToLongBits(cal.formatearDecimales(a)));
+	public void testFormatearDecimales(double num1, double expectedValue) {
+		logger.debug("Llamada al metodo testFormatearDecimales con parametros: \"3.567452, 3.567\", \"53.878975, 3.879\"");
+		assertEquals(Double.doubleToLongBits(expectedValue),Double.doubleToLongBits(cal.formatearDecimales(num1)));
 	}
 
 	@Test
 	@Parameters({
 		"50, 50",
     	"200, 200"})
-	public void testIncrementarInversion(int a, int expectedValue) {
-		cal.incrementarInversion(a, accionista);
+	public void testIncrementarInversion(int cantidadInvertida, int expectedValue) {
+		logger.debug("Llamada al metodo testIncrementarInversion con parametros: \"50, 50\", \"200, 200\"");
+		cal.incrementarInversion(cantidadInvertida, accionista);
 		assertEquals(expectedValue, accionista.getCantidadInvertida());
 	}
 
@@ -56,47 +63,51 @@ public class PrincipalTest<ResourceFile> {
 	@Parameters({
 		"3.664, 50, 3.505, 27.353",
 		"3.256, 50, 3.210, 30.314"})
-	public void testIncrementarAcciones(double a, int b, double c, double expectedValue) {
-		accion.setValorApertura(a);
-		cal.incrementarAcciones(b, accion, accionista);
-		accion.setValorApertura(c);
-		cal.incrementarAcciones(b, accion, accionista);
+	public void testIncrementarAcciones(double accionesA, int cantidadInvertida, double accionesB, double expectedValue) {
+		logger.debug("Llamada al metodo testIncrementarAcciones con parametros: \"3.664, 50, 3.505, 27.353\", \"3.256, 50, 3.210, 30.314\"");
+		accion.setValorApertura(accionesA);
+		cal.incrementarAcciones(cantidadInvertida, accion, accionista);
+		accion.setValorApertura(accionesB);
+		cal.incrementarAcciones(cantidadInvertida, accion, accionista);
 		assertEquals(Double.doubleToLongBits(expectedValue),Double.doubleToLongBits(accionista.getCantidadAcciones()));
 	}
 
 	@Test
 	@Parameters({
 		"27.353, 100, 29.17, 697.887"})
-	public void testCalcularBeneficio(double a, int b, double c, double expectedValue) {
+	public void testCalcularBeneficio(double cantidadAcciones, int cantidadInvertida, double valorCierre, double expectedValue) {
+		logger.debug("Llamada al metodo testCalcularBeneficio con parametros: \"27.353, 100, 29.17, 697.887\"");
 		List<Accion> acciones = new ArrayList<Accion>();
-		accion.setValorCierre(c);
+		accion.setValorCierre(valorCierre);
 		acciones.add(accion);
-		accionista.setCantidadAcciones(a);
-		accionista.setCantidadInvertida(b);
+		accionista.setCantidadAcciones(cantidadAcciones);
+		accionista.setCantidadInvertida(cantidadInvertida);
 		assertEquals(Double.doubleToLongBits(expectedValue),Double.doubleToLongBits(cal.calcularBeneficio(acciones, accionista)));
 	}
 	
 	@Test
 	@Parameters({
 		"27.353, 29.17, 797.887"})
-	public void testCalcularGanancia(double a, double b, double expectedValue) {
+	public void testCalcularGanancia(double cantidadAcciones, double valorCierre, double expectedValue) {
+		logger.debug("Llamada al metodo testCalcularGanancia con parametros: \"27.353, 29.17, 797.887\"");
 		List<Accion> acciones = new ArrayList<Accion>();
-		accion.setValorCierre(b);
+		accion.setValorCierre(valorCierre);
 		acciones.add(accion);
-		accionista.setCantidadAcciones(a);
+		accionista.setCantidadAcciones(cantidadAcciones);
 		assertEquals(Double.doubleToLongBits(expectedValue),Double.doubleToLongBits(cal.calcularGanancia(acciones, accionista)));
 	}
 
 	@Test
 	@Parameters({
 	"stocks-ITXTest.csv, 152"})
-	public void testLeerFichero(String a,  int expectedValue) {
+	public void testLeerFichero(String fichero,  int expectedValue) {
+		logger.debug("Llamada al metodo testLeerFichero con parametros: \"stocks-ITXTest.csv, 152\"");
 		List<Accion> acciones;
 		try {
-			acciones = principalTest.leerFicheroController(a);
+			acciones = principalTest.leerFicheroController(fichero);
 			assertEquals(expectedValue, acciones.size());
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			logger.error("Error en la lectura del fichero del método testLeerFichero con parámetro: {} y expectedValue: {}", fichero, expectedValue);
 			e.printStackTrace();
 		}
 	}
@@ -104,15 +115,16 @@ public class PrincipalTest<ResourceFile> {
 	@Test
 	@Parameters({
 	"stocks-ITXTest.csv, 8"})
-	public void testCalcularTotales(String a,  int expectedValue) {
+	public void testCalcularTotales(String fichero,  int expectedValue) {
+		logger.debug("Llamada al metodo testCalcularTotales con parametros: \"stocks-ITXTest.csv, 8\"");
 		List<Accion> accionesIn;
 		List<Accion> accionesOut;
 		try {
-			accionesIn = principalTest.leerFicheroController(a);
+			accionesIn = principalTest.leerFicheroController(fichero);
 			accionesOut = principalTest.calcularTotales(accionesIn);
 			assertEquals(expectedValue, accionesOut.size());
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			logger.error("Error en método testCalcularTotales con parámetro fichero: {} y expectedValue: {}", fichero, expectedValue);
 			e.printStackTrace();
 		}
 		
@@ -122,13 +134,14 @@ public class PrincipalTest<ResourceFile> {
 	@Test
 	@Parameters({
 	"stocks-ITXTest.csv, 8"})
-	public void testBuscaUltimoJueves(String a, int expectedValue) {
+	public void testBuscaUltimoJueves(String fichero, int expectedValue) {
+		logger.debug("Llamada al metodo testBuscaUltimoJueves con parametros: \"stocks-ITXTest.csv, 8\"");
 		List<Accion> acciones;
 		try {
-			acciones = principalTest.leerFicheroController(a);
+			acciones = principalTest.leerFicheroController(fichero);
 			assertEquals(expectedValue, principalTest.buscaUltimoJueves(acciones).size());
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			logger.error("Error en método testBuscaUltimoJueves con parámetro fichero: {} y expectedValue: {}", fichero, expectedValue);
 			e.printStackTrace();
 		}
 	}
@@ -137,6 +150,7 @@ public class PrincipalTest<ResourceFile> {
 	@Parameters({
 	"6"})
 	public void testEncuentraFechaCompra(int expectedValue) {
+		logger.debug("Llamada al metodo testEncuentraFechaCompra con parametros: \"6\"");
 		List <LocalDate> listaFechas = new ArrayList <LocalDate>();
 		LocalDate fecha = LocalDate.parse("2001-06-01");
 		listaFechas.add(fecha);
